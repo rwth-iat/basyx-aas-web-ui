@@ -98,8 +98,7 @@ export default defineConfig(({ mode }) => {
         },
         server: {
             port: 3000,
-            host: true, // expose on network for mobile testing
-            https: true, // required for camera access on iOS
+            host: true, // expose on network for mobile testing (basicSsl plugin provides HTTPS)
             hmr: true, // enable hot module replacement
         },
         css: {
