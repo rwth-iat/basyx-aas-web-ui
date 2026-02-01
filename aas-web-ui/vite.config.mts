@@ -1,4 +1,5 @@
 // Plugins
+import basicSsl from '@vitejs/plugin-basic-ssl';
 import Vue from '@vitejs/plugin-vue';
 import { execSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
@@ -59,6 +60,7 @@ export default defineConfig(({ mode }) => {
 
     return {
         plugins: [
+            basicSsl(),
             copyWebIfcWasmPlugin(),
             AutoImport({
                 imports: ['vue'],
@@ -96,6 +98,8 @@ export default defineConfig(({ mode }) => {
         },
         server: {
             port: 3000,
+            host: true, // expose on network for mobile testing
+            https: true, // required for camera access on iOS
             hmr: true, // enable hot module replacement
         },
         css: {
