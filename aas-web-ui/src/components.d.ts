@@ -84,6 +84,7 @@ declare module 'vue' {
     PieChart: typeof import('./components/Widgets/PieChart.vue')['default']
     Property: typeof import('./components/SubmodelElements/Property.vue')['default']
     PropertyForm: typeof import('./components/EditorComponents/SubmodelElements/PropertyForm.vue')['default']
+    QRScanner: typeof import('./components/AppNavigation/QRScanner.vue')['default']
     QualifierElement: typeof import('./components/UIComponents/QualifierElement.vue')['default']
     Range: typeof import('./components/SubmodelElements/Range.vue')['default']
     RangeForm: typeof import('./components/EditorComponents/SubmodelElements/RangeForm.vue')['default']
