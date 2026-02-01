@@ -34,6 +34,19 @@
                                 persistent-placeholder
                                 @update:model-value="debouncedFilterAasList"></v-text-field>
                         </v-col>
+                        <!-- QR Scanner Button -->
+                        <v-col cols="auto" class="px-0">
+                            <v-tooltip open-delay="600" location="bottom" :disabled="isMobile">
+                                <template #activator="{ props }">
+                                    <v-btn
+                                        icon="mdi-qrcode-scan"
+                                        variant="plain"
+                                        v-bind="props"
+                                        @click="qrScannerDialog = true"></v-btn>
+                                </template>
+                                <span>Scan QR Code</span>
+                            </v-tooltip>
+                        </v-col>
                         <!-- Add AAS -->
                         <v-col cols="auto" class="px-0">
                             <v-menu v-if="editMode">
@@ -305,6 +318,8 @@
     <DownloadAAS v-model="downloadAASDialog" :aas="aasToDownload"></DownloadAAS>
     <!-- Dialog for Instance Creation from Type -->
     <AASToInstance v-model="instanceDialog" :aas="aasToInstantiate"></AASToInstance>
+    <!-- Dialog for QR Scanner -->
+    <QRScanner v-model="qrScannerDialog"></QRScanner>
 </template>
 
 <script lang="ts" setup>
@@ -362,6 +377,7 @@
     const copyIcon = ref<string>('mdi-clipboard-file-outline');
     const instanceDialog = ref(false); // Variable to store if the Instance Creation Dialog should be shown
     const aasToInstantiate = ref({}); // Variable to store the AAS to be instantiated
+    const qrScannerDialog = ref(false); // Variable to store if the QR Scanner Dialog should be shown
 
     // Computed Properties
     const isMobile = computed(() => navigationStore.getIsMobile); // Check if the current Device is a Mobile Device
