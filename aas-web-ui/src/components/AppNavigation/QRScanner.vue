@@ -87,6 +87,8 @@
     import { Html5Qrcode } from 'html5-qrcode';
     import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
     import { useRoute, useRouter } from 'vue-router';
+    import { useAASHandling } from '@/composables/AAS/AASHandling';
+    import { useAASDiscoveryClient } from '@/composables/Client/AASDiscoveryClient';
 
     // Extend MediaTrackConstraintSet to include torch (not in default TypeScript types)
     interface TorchConstraints extends MediaTrackConstraintSet {
@@ -118,6 +120,9 @@
     const hasCameraToggle = ref(false);
     const hasTorch = ref(false);
     const isTorchOn = ref(false);
+    const { getAasId } = useAASDiscoveryClient();
+    const { fetchAndDispatchAasById } = useAASHandling();
+    let isProcessing = false;
 
     let html5QrCode: Html5Qrcode | null = null;
     let currentVideoTrack: MediaStreamTrack | null = null;
@@ -304,9 +309,9 @@
             setTorch(false);
         }
     }
-
-    function onScanSuccess(decodedText: string): void {
-        console.log('QR Code scanned:', decodedText);
+    async function onScanSuccess(decodedText: string): Promise<void> {
+        if (isProcessing) return;
+        isProcessing = true;
 
         // Show success state
         scanSuccess.value = true;
@@ -317,11 +322,25 @@
             query: { ...route.query, assetId: decodedText },
         });
 
-        // Close dialog after a short delay
-        setTimeout(() => {
-            closeDialog();
-        }, 500);
+        try {
+            // Fetch aasID from assetId
+            const aasId = await getAasId(decodedText);
+
+            if (aasId) {
+                // Fetch and Dispatch AAS from aasID
+                await fetchAndDispatchAasById(aasId);
+            } else {
+                console.warn('No AAS found for assetId:', decodedText);
+            }
+        } catch (e) {
+            console.error('AAS fetch failed:', e);
+        } finally {
+            // Always close dialog after a short delay
+            setTimeout(() => closeDialog(), 500);
+            isProcessing = false;
+        }
     }
+
 
     function onScanError(errorMessage: string): void {
         // This is called very frequently during scanning, so we don't show these errors
