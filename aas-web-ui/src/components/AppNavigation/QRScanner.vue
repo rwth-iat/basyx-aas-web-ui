@@ -341,7 +341,6 @@
         }
     }
 
-
     function onScanError(errorMessage: string): void {
         // This is called very frequently during scanning, so we don't show these errors
         // Only log to console for debugging
